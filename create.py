@@ -23,6 +23,13 @@ def run_query1(query1, variables1):
     else:
         raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
+def run_query2(query2):
+    request = requests.post(url, json={'query': query2}, headers=headers)
+    if request.status_code == 200:
+        return request.json()
+    else:
+        raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+
              
 query = """
 mutation createapp($app: CreateApplicationInput!) {
@@ -76,6 +83,25 @@ variables1 = {
   }
 }
 
+query2 = """
+{
+  connectors(
+    filters: [
+      { connectorType: { operator: EQUALS, values: GIT } }
+    ]
+    limit: 10
+  ) {
+    pageInfo {
+      total
+    }
+    nodes {
+      id
+      name
+    }
+  }
+}
+"""
 # result = run_query(query, variables) 
-result1 = run_query1(query1,variables1)
-print(result1)
+# result1 = run_query(query1,variables1)
+result2 = run_query2(query2)
+print(result2)
