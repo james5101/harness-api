@@ -1,7 +1,8 @@
 import requests
 import os
+account_key = (os.environ.get('HARNESS_ACCOUNT_KEY'))
 
-url = "https://app.harness.io/gateway/api/graphql?accountId=R3L-GcfkSqqZTG7_CWR4-w"
+url = f"https://app.harness.io/gateway/api/graphql?accountId={account_key}"
 
 headers = {
   'Content-Type': 'application/json',
@@ -31,7 +32,7 @@ mutation createapp($app: CreateApplicationInput!) {
 variables = {
   "app": {
     "clientMutationId": "req9",
-    "name": "create_from_api_3",
+    "name": "create_from_api_4",
     "description": "test create harness application from api"
   }
 }
