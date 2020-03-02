@@ -23,7 +23,7 @@ def run_query_without_vars(query):
   else:
     raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
-def get_git_connector_by_id(name):
+def get_git_connector_id_by_name(name):
   query = """
     {
       connectors(
@@ -43,7 +43,28 @@ def get_git_connector_by_id(name):
     }
     """
   result = run_query_without_vars(query)
-  print(result)
+  git_connectors = result['data']['connectors']['nodes']
+  git_connectors = tuple(git_connectors)
+  for name in enumerate(git_connectors):
+    print(name )
+  # print(git_connectors)
+
+def get_app_id_by_name(name):
+  query = """
+    {
+      applicationByName(name:"%s") {
+        id
+      }
+    }
+  """ % (name)
+  result = run_query_without_vars(query)
+  print(result["data"]["applicationByName"]["id"])
+  return result["data"]["applicationByName"]["id"]
+  
+    
+      
+  # print(result['data']['connectors']['nodes'])
+  # print(result.request.body)
 
 def create_new_application(name, description):
   query = """
@@ -69,6 +90,7 @@ def create_new_application(name, description):
   print(result)
 
 def create_git_sync_with_app(name):
+  app_id = get_app_id_by_name(name)
   query = """
   mutation updateGitConfig($gitConfig: UpdateApplicationGitSyncConfigInput!) {
     updateApplicationGitSyncConfig(input: $gitConfig) {
@@ -94,7 +116,7 @@ def create_git_sync_with_app(name):
   variables = {
     "gitConfig": {
       "clientMutationId": "req321",
-      "applicationId": "zHvqEutEQ6KcnoG55m8tOg",
+      "applicationId": app_id,
       "gitConnectorId": "_pRVp-R_TGqoIC0A60Y7gw",
       "branch": "master",
       "syncEnabled": "true"
@@ -102,7 +124,8 @@ def create_git_sync_with_app(name):
   }
   result = run_query_with_vars(query, variables)
   print(result)
-# get_git_connector_by_id("test")
+
+#get_git_connector_id_by_name("test")
 # create_new_application("name")
 # create_git_sync_with_app("name")
-create_new_application("test_create", "description")
+get_app_id_by_name("test_create")
